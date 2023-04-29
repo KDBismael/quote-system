@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  fullName  String
+  email String  @unique
+  password String
+  tel String?
+  posts Post[]
+  comment Comment[]
+  notification Notification[]
+  follow Follower[]
+}
+
+model Post {
+  id        Int      @default(autoincrement()) @id
+  title     String
+  content   String?
+  published Boolean? @default(false)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  comment Comment[]
+  like  Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+model Comment {
+  id        Int      @default(autoincrement()) @id
+  Post      Post     @relation(fields: [postId],references: [id])
+  postId    Int
+  content   String?
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  vote      Int
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model Notification{
+  id  Int @default(autoincrement()) @id
+  title String
+  content   String
+  author    User[]
+  createdAt  DateTime   @default(now())
+}
+
+model Follower{
+  id Int @default(autoincrement()) @id
+  follower User @relation(fields: [followerId],references: [id])
+  followerId Int
+  createdAt  DateTime   @default(now())
+}
