@@ -7,22 +7,25 @@ import {
   Param,
   Delete,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { CreateArticleDto } from './dto/create-article.dto';
+import { CreateArticleDto } from './dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from 'src/user/user.decorator';
+import { User as prismaUser } from '@prisma/client';
 
+@UseGuards(AuthGuard())
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articlesService.create(createArticleDto);
+  create(@Body() createArticleDto: CreateArticleDto, @User() user: prismaUser) {
+    return this.articlesService.create(createArticleDto, user);
   }
 
-  @UseGuards(AuthGuard())
   @Get()
   findAll() {
     return this.articlesService.findAll();
