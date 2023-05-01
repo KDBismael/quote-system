@@ -1,4 +1,5 @@
 export class CreateCommentDto {
   postId: number;
-  content: string | null;
+  content: string;
+  vote: number;
 }

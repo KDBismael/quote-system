@@ -1,26 +1,29 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import _ = require('lodash');
+import { User, Comment } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(private prismaService: PrismaService) {}
+
+  async create(comment: CreateCommentDto, user: User): Promise<Comment> {
+    if (_.isEmpty(comment)) throw new HttpException('no data provided!', 400);
+    const data = {
+      authorId: user.id,
+      vote: +comment.vote,
+      postId: +comment.postId,
+      content: comment.content,
+    };
+    return await this.prismaService.comment.create({ data: data });
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findByArticle(id: number) {
+    return await this.prismaService.comment.findMany({ where: { postId: id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
-  }
-
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: number) {
+    return await this.prismaService.comment.delete({ where: { id: id } });
   }
 }
