@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(private User: UserService, private jwt: JwtService) {}
-
+  
   async register(data: authDto) {
     let user: User = await this.User.find(data.email);
     if (user) throw new HttpException('You already have an account', 400);

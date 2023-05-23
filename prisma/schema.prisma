@@ -56,7 +56,7 @@ model Notification{
 
 model Follower{
   id Int @default(autoincrement()) @id
-  follower User @relation(fields: [followerId],references: [id])
-  followerId Int
+  follower User @relation(fields: [followedId],references: [id])
+  followedId Int @unique
   createdAt  DateTime   @default(now())
 }

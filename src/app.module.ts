@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CommentModule } from './comment/comment.module';
 import { NotificationModule } from './notification/notification.module';
 import { FollowerModule } from './follower/follower.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -19,5 +20,6 @@ import { FollowerModule } from './follower/follower.module';
     NotificationModule,
     FollowerModule,
   ],
+  // exports:[ClientsModule]
 })
 export class AppModule {}
